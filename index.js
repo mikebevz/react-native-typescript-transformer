@@ -20,7 +20,7 @@ const reactNativeMinorVersion = semver(reactNativeVersionString).minor
 if (reactNativeMinorVersion >= 56) {
   upstreamTransformer = require('metro/src/reactNativeTransformer')
 } else if (reactNativeMinorVersion >= 52) {
-  upstreamTransformer = require('metro/src/transformer')
+  upstreamTransformer = require('metro-bundler/src/transformer')
 } else if (reactNativeMinorVersion >= 47) {
   upstreamTransformer = require('metro-bundler/src/transformer')
 } else if (reactNativeMinorVersion === 46) {
@@ -189,7 +189,7 @@ const compilerOptions = Object.assign(tsConfig.compilerOptions, {
   inlineSources: true,
 })
 
-module.exports.getCacheKey = function() {
+module.exports.getCacheKey = function () {
   const upstreamCacheKey = upstreamTransformer.getCacheKey
     ? upstreamTransformer.getCacheKey()
     : ''
@@ -200,10 +200,10 @@ module.exports.getCacheKey = function() {
   return key.digest('hex')
 }
 
-module.exports.transform = function(src, filename, options) {
+module.exports.transform = function (src, filename, options) {
   if (typeof src === 'object') {
     // handle RN >= 0.46
-    ;({ src, filename, options } = src)
+    ; ({ src, filename, options } = src)
   }
 
   if (filename.endsWith('.ts') || filename.endsWith('.tsx')) {
@@ -253,16 +253,16 @@ module.exports.transform = function(src, filename, options) {
 
     const composedMap = Array.isArray(babelCompileResult.map)
       ? composeRawSourceMap(
-          tsCompileResult.sourceMapText,
-          babelCompileResult.map
-        )
+        tsCompileResult.sourceMapText,
+        babelCompileResult.map
+      )
       : composeSourceMaps(
-          tsCompileResult.sourceMapText,
-          babelCompileResult.map,
-          filename,
-          src,
-          babelCompileResult.code
-        )
+        tsCompileResult.sourceMapText,
+        babelCompileResult.map,
+        filename,
+        src,
+        babelCompileResult.code
+      )
 
     return Object.assign({}, babelCompileResult, {
       map: composedMap,
